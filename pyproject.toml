@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ptkit"
+version = "0.2.1"
+description = "Read, inspect, edit and write Cisco Packet Tracer .pkt/.pka files"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+dependencies = ["lxml>=5"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pycryptodome>=3.20"]
+build = ["pyinstaller>=6", "pillow>=10"]
+
+[project.scripts]
+ptkit = "ptkit.cli:main"
+
+[project.gui-scripts]
+ptkit-gui = "ptkit.gui:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["samples: round-trip tests against a local Packet Tracer install"]
