@@ -5,17 +5,11 @@ and rebuilding Cisco Packet Tracer `.pkt` networks and `.pka` activities. It bri
 instructions, device configuration, grading checklists, reference topologies, batch
 editing, and solution-copy generation into one interface for lab authors and networking teams.
 
-Published by **Sponge** on behalf of the project contributors. Licensed under the
-[MIT License](LICENSE). **Use at your own risk:** users are responsible for their
-own actions, permissions, compliance with applicable rules, and validation of
-outputs. Read the [responsibility and risk notice](RESPONSIBLE_USE.md).
-The desktop app's **License & use** button displays the bundled license and notices.
+Use the desktop app to inspect and edit activities visually, or use the command
+line and Python API to automate your workflow. Files are processed locally.
 
-The Windows release is a portable application: download it, extract it, and run
-`PTKit.exe`. Python and XML dependencies are bundled. It does not depend on a
-particular username, computer name, project folder, or Packet Tracer installation
-path. Cisco Packet Tracer is installed separately and is used to open the resulting
-activities and run its actual grader.
+The Windows app is portable and includes its Python dependencies. Install Cisco
+Packet Tracer separately to open generated activities and validate them in the simulator.
 
 ## Features
 
@@ -36,9 +30,7 @@ activities and run its actual grader.
 1. Open this repository's **Releases** page.
 2. Download **PTKit-windows-x64.zip** and extract it to a writable folder.
 3. Run **PTKit.exe**. No Python installation or installer is required.
-4. Keep `LICENSE`, `RESPONSIBLE_USE.md`, `THIRD_PARTY_NOTICES.md` and `licenses/`
-   with the distribution.
-5. Use **Browse…** to select a `.pkt` or `.pka`, or drop a file onto the executable.
+4. Use **Browse…** to select a `.pkt` or `.pka`, or drop a file onto the executable.
 
 The release targets 64-bit Windows 10/11. A directly attached `PTKit.exe` is the
 same executable as the one inside the ZIP; the ZIP is preferred because it also
@@ -90,10 +82,7 @@ network. Named grading variables and explicit overrides are retained.
 
 **A solution candidate is not a universal 100% guarantee.** Custom scripts, runtime
 objects, progress conditions, and unsupported checks require evaluation in Packet
-Tracer. A locally unresolved check can still pass in Packet Tracer. The legacy
-Skills Integration Challenge used during validation reached 100% in Packet Tracer
-9.0.1, including all assessment categories and both connectivity checks; that result
-is specific to that activity.
+Tracer. A locally unresolved check can still pass in Packet Tracer.
 
 ### XML export and import
 
@@ -125,7 +114,6 @@ python -m venv .venv
 
 Alternatively, `setup_env.ps1` creates the environment and runs the core tests.
 On macOS/Linux, use `sh setup_env.sh`, then `.venv/bin/python gui.py`.
-No source edit is needed to change the user profile or Packet Tracer folder.
 
 ## Command line and Python API
 
@@ -170,27 +158,14 @@ parameters = activity.extract_topologies()
 .\build_exe.ps1
 ```
 
-The build creates an audited `release/PTKit.exe`, a Windows distribution ZIP,
-a source ZIP, a repository-ready folder, checksums, and a targeted privacy report.
-It tests the executable after moving it to another folder with a minimal PATH.
-Optional sample tests discover the local Packet Tracer saves directory or use
-`PTKIT_SAMPLES`; no Cisco activities are shipped with this project.
+The Windows build packages the desktop app and its dependencies for distribution.
+Optional sample tests use `PTKIT_SAMPLES` or discover local Packet Tracer saves.
+No Cisco activities are included in this project.
 
-For exactly what to upload and how to create a release, see
-[Releasing](docs/RELEASING.md). For generated data, logs, exclusions, and commit
-identity, see [Privacy](docs/PRIVACY.md).
+For packaging instructions, see [Releasing](docs/RELEASING.md). For generated files
+and repository exclusions, see [Privacy](docs/PRIVACY.md).
 
-The included GitHub Actions workflow builds release candidates on a Windows runner.
-It runs manually or on version tags and uploads workflow artifacts; it does not
-publish a release automatically. This workflow must be tested in the group's
-repository after upload.
-
-## Privacy and distribution
-
-Upload the contents of the generated **release/repository/** folder as the repository
-root. Keep actual activities, XML exports, solve reports, screenshots, logs, virtual
-environments, test output, and old builds out of Git. The supplied `.gitignore`
-and source-bundle allowlist exclude them.
+## Privacy
 
 Runtime logs are local to the current user, normally under
 `%LOCALAPPDATA%/ptkit/ptkit-gui.log`. Logs and the contents of input/output activities
@@ -199,17 +174,15 @@ sharing. New solve reports store filenames instead of full local paths.
 
 ## License and responsibility
 
-PTKit is licensed under the standard [MIT License](LICENSE), including its warranty
-disclaimer and limitation of liability. The public notice uses **Sponge and
-contributors**; the group does not need to be a company to publish this project.
+PTKit is published by **Sponge and contributors** under the [MIT License](LICENSE).
+The software is provided without warranty. Keep backups and validate generated
+files in Packet Tracer before relying on them.
 
-Users are responsible for their own actions and use the software at their own
-risk, subject to applicable law. Keep backups and independently check outputs.
-The license does not guarantee complete immunity from liability or grant rights
-the contributors do not hold. It does not authorize violations of third-party
-licenses, access restrictions, institutional policies, or applicable law.
+Use PTKit with files you are authorized to inspect or modify, and follow applicable
+course, institutional, and third-party requirements. See the
+[responsibility notice](RESPONSIBLE_USE.md) for details.
 
-PTKit is independent of Cisco and does not include Packet Tracer itself. Cisco
-and third-party components retain their own rights and licenses. See the
-[responsibility notice](RESPONSIBLE_USE.md) and
-[third-party notices](THIRD_PARTY_NOTICES.md).
+PTKit is an independent project and is not affiliated with Cisco. Packet Tracer
+is not included. See the [third-party notices](THIRD_PARTY_NOTICES.md) for
+component licenses.
+
