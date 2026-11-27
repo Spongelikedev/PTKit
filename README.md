@@ -75,6 +75,14 @@ explicit grading values such as hostname, IPv4 address, subnet mask, endpoint
 DNS/gateway, and power state. It also handles activities with an Activity Wizard
 password. The source file and editor session remain unchanged.
 
+Version 0.2.2 fixes the serialized activity network order: initial, user, answer.
+Earlier versions wrote solutions and default edits into the initial network, so
+Packet Tracer could open an unchanged working network despite a successful local
+report. Re-run Solve on the original activity with 0.2.2 to regenerate the output.
+The fix was verified with Explore a Simple Network in Packet Tracer 9.0.1:
+both PCs and their cables load, and completion reaches 100% without changing
+grading criteria. This result does not guarantee completion for other activities.
+
 A companion `.solve-report.json` records local checks, unsupported requirements,
 and any legacy assessment compatibility repairs. Repairs preserve selected checks
 and point totals, deriving compatible serialized targets from the unchanged answer
@@ -96,6 +104,9 @@ Edit either `document.xml` or individual network fragments, then import the fold
 Editing both representations is rejected as ambiguous. Complete bundles do not
 require the original container. Older user-only bundles still require their
 original source file.
+
+Network fragments exported by 0.2.1 have the user and initial labels reversed.
+Re-export the original container with 0.2.2 before editing those fragments.
 
 ## Run from source
 
