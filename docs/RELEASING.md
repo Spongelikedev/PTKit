@@ -4,7 +4,7 @@
 
 1. Use `release/repository/`, which is the clean repository-ready source folder.
    Alternatively, extract `release/PTKit-source.zip` into a new folder.
-2. Put its **contents** at the root of the group's private repository. `README.md`,
+2. Put its **contents** at the root of the public repository. `README.md`,
    `pyproject.toml`, `gui.py`, `src/`, and the other listed items belong at that root.
    Do not upload the source ZIP as the only file in the repository.
 3. Include `.gitignore` and `.github/`; file pickers may hide names starting with a dot.
@@ -39,7 +39,7 @@ repository-ready folder exclude those files regardless of what exists locally.
 
 ## Recommended release assets
 
-Create a release for the matching version tag, for example `v0.2.1`, and attach:
+Create a release for the matching version tag, currently `v0.2.2`, and attach:
 
 - **PTKit-windows-x64.zip** — recommended download: EXE, README, MIT license, responsibility notice and third-party notices/licenses.
 - **PTKit.exe** — optional direct download; exactly the EXE inside the Windows ZIP.
@@ -87,7 +87,7 @@ The workflow does not publish to Releases or request a personal access token.
 It uses the official [checkout](https://github.com/actions/checkout),
 [setup-python](https://github.com/actions/setup-python) and
 [upload-artifact](https://github.com/actions/upload-artifact) actions. The workflow
-has been prepared locally; verify its first run in the private repository.
+has been prepared locally; verify its first run in the repository.
 
 ## Before publishing a new version
 

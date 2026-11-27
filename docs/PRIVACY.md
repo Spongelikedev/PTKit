@@ -28,7 +28,7 @@ or license author names; those are not the workstation owner's identity.
 Do not upload the development workspace wholesale. Keep these out of Git and
 release assets:
 
-- `.venv/`, `__pycache__/`, `.pytest_cache/`, `.test-tmp*/`, `build/`, old `dist/` builds.
+- `.venv/`, `.venv312/`, `__pycache__/`, `.pytest_cache/`, `.test-tmp*/`, `build/`, old `dist/` builds.
 - `solutions/`, actual `.pkt`/`.pka`/`.pkz` files, XML export folders and manifests.
 - Solve reports, validation reports, screenshots, logs and `PROGRESS.md`.
 - `.env` files, private keys, certificates with private keys, access tokens or credentials.
