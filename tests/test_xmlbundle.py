@@ -63,7 +63,7 @@ def test_edited_network_file_is_spliced(tmp_path):
     res = xmlbundle.import_path(tmp_path / "x")
     out = PTFile.load(xmlbundle.write_container(res, tmp_path / "re.pka"))
     assert [n.device("Router0").hostname for n in out.networks()] == \
-        ["Router", "Init2", "ANSWER-KEY"]
+        ["Init2", "Router", "ANSWER-KEY"]
 
 
 def test_editing_document_and_network_is_ambiguous(tmp_path):
@@ -85,7 +85,7 @@ def test_locked_export_includes_all_networks_and_grading(tmp_path):
     assert b"ANSWER-KEY" in (tmp_path / "x" / "network-answer.xml").read_bytes()
     assert b"SECRET" in (tmp_path / "x" / "document.xml").read_bytes()
     manifest = json.loads((tmp_path / "x" / "manifest.json").read_text())
-    assert manifest["locked_by_author"] and manifest["networks"] == ["user", "initial", "answer"]
+    assert manifest["locked_by_author"] and manifest["networks"] == ["initial", "user", "answer"]
 
 
 def test_locked_user_network_edit_spliced_hidden_parts_untouched(tmp_path):

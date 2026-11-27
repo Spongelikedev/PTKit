@@ -178,7 +178,8 @@ def test_end_device_cannot_take_cli(app, pkt):
 def test_pka_instructions_networks_and_assessment(app, pka, tmp_path):
     load(app, pka)
     assert "Configure Router0." in app.instr_text.get("1.0", "end")
-    assert list(app.net_combo["values"]) == ["user", "initial", "answer"]
+    assert list(app.net_combo["values"]) == ["initial", "user", "answer"]
+    assert app.net_var.get() == 'user'
     assert app.assess_tree.get_children()  # read-only grading tree shown
     # edit only the "initial" network
     app.net_var.set("initial")
@@ -188,7 +189,7 @@ def test_pka_instructions_networks_and_assessment(app, pka, tmp_path):
     app.out_var.set(str(tmp_path / "act-out.pka"))
     app.apply_clicked()
     nets = PTFile.load(tmp_path / "act-out.pka").networks()
-    assert [n.device("Router0").hostname for n in nets] == ["Router", "Lab1", "ANSWER-KEY"]
+    assert [n.device("Router0").hostname for n in nets] == ["Lab1", "Router", "ANSWER-KEY"]
 
 
 def test_rejects_bad_output_extension(app, pkt, tmp_path):

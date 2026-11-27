@@ -146,7 +146,7 @@ def test_save_preserves_legacy_format(tmp_path, pkt_xml):
 def test_activity_networks_and_assessment(pka_xml):
     pt = PTFile.from_xml(pka_xml)
     assert pt.is_activity
-    assert [n.role for n in pt.networks()] == ["user", "initial", "answer"]
+    assert [n.role for n in pt.networks()] == ["initial", "user", "answer"]
     checklist = pt.activity.checklist()
     assert [(i.parts, i.points) for i in checklist] == [
         (("Network", "Router0", "Host Name"), "2"),
@@ -165,7 +165,7 @@ def test_edit_one_pka_network_leaves_others(pka_xml):
     with pt.network("initial").device("Router0").edit_config() as cfg:
         cfg.set_hostname("Lab1")
     again = PTFile.from_xml(pt.to_xml())
-    assert [n.device("Router0").hostname for n in again.networks()] == ["Router", "Lab1", "ANSWER-KEY"]
+    assert [n.device("Router0").hostname for n in again.networks()] == ["Lab1", "Router", "ANSWER-KEY"]
 
 
 # --- IosConfig unit tests ------------------------------------------------------

@@ -51,11 +51,11 @@ def test_empty_standard_file():
 
 def test_original_activity_roles(pka_xml):
     data = PTFile.from_xml(pka_xml).extract_topologies()
-    assert list(data) == ['user', 'initial', 'answer']
+    assert list(data) == ['initial', 'user', 'answer']
 
 
 def test_locked_inspection_includes_all_states():
     from conftest import make_pka_xml
     data = PTFile.from_xml(make_pka_xml(password='secret')).extract_topologies()
-    assert list(data) == ['user', 'initial', 'answer']
+    assert list(data) == ['initial', 'user', 'answer']
     assert 'ANSWER-KEY' in repr(data)

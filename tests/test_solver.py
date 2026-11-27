@@ -19,12 +19,12 @@ def test_solution_preserves_everything_except_user_tree(tmp_path, fmt, password,
     assert available(pt)
     original = pt.to_xml()
     roots = [el for el in pt.root if el.tag in ('PACKETTRACER', 'PACKETTRACER5')]
-    old_user, answer = pt.doc.fragment(roots[0]), pt.doc.fragment(roots[2])
+    old_user, answer = pt.doc.fragment(roots[1]), pt.doc.fragment(roots[2])
     out = tmp_path / 'solution.pka'
     result = write_solution(pt, out)
     solved = PTFile.load(out)
-    # First occurrence only: initial and user may be identical in the source.
-    solved_user = next(c for c in solved.root if c.tag in ('PACKETTRACER', 'PACKETTRACER5'))
+    # The second serialized state is the learner network; preserve the first.
+    solved_user = [c for c in solved.root if c.tag in ('PACKETTRACER', 'PACKETTRACER5')][1]
     assert solved.to_xml().replace(solved.doc.fragment(solved_user), old_user, 1) == xml
     assert solved.network('user').device('Router0').hostname == 'SECRET-HOSTNAME'
     assert result.matched == 1 and result.unresolved == 2
@@ -72,3 +72,32 @@ def test_refuse_overwriting_source_and_wrong_extension(tmp_path):
     with pytest.raises(SolveError, match='.pka'):
         write_solution(pt, tmp_path / 'out.pkt')
     assert source.read_bytes() == original
+
+
+@pytest.mark.parametrize('pt4', [False, True])
+@pytest.mark.parametrize('password', ['', 'secret'])
+def test_solve_targets_second_serialized_network_and_preserves_initial(tmp_path, pt4, password):
+    # Deliberately inspect physical XML slots, independently of the role mapping.
+    # Packet Tracer loads slot 1; the old implementation edited slot 0 instead.
+    pt = PTFile.from_xml(make_pka_xml(pt4=pt4, password=password))
+    roots = [n for n in pt.root if n.tag in ('PACKETTRACER', 'PACKETTRACER5')]
+    initial = pt.doc.fragment(roots[0])
+    roots[2].find('.//ENGINE/NAME[.="PC0"]').text = 'Added-PC'
+    roots[2].find('.//LINK').set('regression', 'answer-cable')
+    pc = roots[1].xpath('.//DEVICE[ENGINE/NAME="PC0"]')[0]
+    pc.getparent().remove(pc)
+    roots[1].find('.//LINKS').clear()
+    answer = pt.doc.fragment(roots[2])
+    before = pt.to_xml()
+    out = tmp_path / 'solved.pka'
+    write_solution(pt, out)
+    saved = PTFile.load(out)
+    slots = [n for n in saved.root if n.tag in ('PACKETTRACER', 'PACKETTRACER5')]
+    assert saved.doc.fragment(slots[0]) == initial
+    assert saved.doc.fragment(slots[2]) == answer
+    assert slots[1].find('.//LINK[@regression="answer-cable"]') is not None
+    assert slots[1].find('.//ENGINE/NAME[.="Added-PC"]') is not None
+    assert saved.network().el is slots[1]
+    assert saved.network('user').el is slots[1]
+    assert len(list(slots[1].iter('DEVICE'))) == 2
+    assert pt.to_xml() == before

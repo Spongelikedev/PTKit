@@ -24,7 +24,7 @@ def test_pt4_activity_loads_edits_and_saves(tmp_path, fmt):
     src.write_bytes(codec.encode(make_pka_xml(pt4=True), fmt))
     pt = PTFile.load(src)
     assert pt.is_activity and pt.version == "4.1"
-    assert [n.role for n in pt.networks()] == ["user", "initial", "answer"]
+    assert [n.role for n in pt.networks()] == ["initial", "user", "answer"]
     assert pt.to_bytes() == src.read_bytes()
     ops.apply_snippet(pt.network().device("Router0"), "hostname Edited")
     pt.save(tmp_path / "out.pka")
