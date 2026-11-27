@@ -1,0 +1,32 @@
+name: Windows build
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install build and test tools
+        run: python -m pip install -e ".[dev,build]"
+      - name: Test without a Packet Tracer installation
+        run: python -m pytest -q -m "not samples"
+      - name: Build, relocate, self-test and audit
+        run: python tools/build_release.py
+      - name: Upload release candidates
+        uses: actions/upload-artifact@v7
+        with:
+          name: PTKit-windows-x64
+          path: |
+            release/PTKit.exe
+            release/PTKit-windows-x64.zip
+            release/PTKit-source.zip
+            release/SHA256SUMS.txt
+            release/privacy-check.json
+
