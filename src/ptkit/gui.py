@@ -758,7 +758,7 @@ class PtkitApp:
         self._populate_info()
         nets = [n.role for n in pt.networks()]
         self.net_combo.configure(values=nets, state="readonly" if len(nets) > 1 else "disabled")
-        self.net_var.set(nets[0])
+        self.net_var.set("user" if "user" in nets else nets[0])
         self._refresh_targets()
         self._update_status()
         self.solve_btn.configure(state="normal" if solver.available(pt) else "disabled")

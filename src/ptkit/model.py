@@ -16,7 +16,7 @@ Document layout (observed in Packet Tracer 6.x-8.x files)::
       NETWORK/LINKS/LINK/CABLE          FROM, PORT, TO, PORT, TYPE
 
     PACKETTRACER5_ACTIVITY              (.pka root)
-      PACKETTRACER5 x3                  user, initial, answer network (inferred)
+      PACKETTRACER5 x3                  initial, user, answer network
       COMPARISONS/NODE...               assessment tree
       ACTIVITY/INSTRUCTIONS/PAGE*       instruction pages
 """
@@ -35,7 +35,8 @@ from . import codec
 from .iosconfig import IosConfig, is_virtual_interface
 from .xmlio import XmlDoc
 
-PKA_NETWORK_ROLES = ("user", "initial", "answer")
+# Serialized order, verified by loading distinct states in Packet Tracer 9.0.1.
+PKA_NETWORK_ROLES = ("initial", "user", "answer")
 
 # Root/network element names: PT 5.0+ appends "5"; PT 4.x files do not.
 ACTIVITY_ROOTS = ("PACKETTRACER5_ACTIVITY", "PACKETTRACER_ACTIVITY")
@@ -663,16 +664,18 @@ class PTFile:
             return [Network(self.root, self.doc, "network")]
         roles = PKA_NETWORK_ROLES if len(nets) == 3 else [f"net{i}" for i in range(len(nets))]
         out = [Network(n, self.doc, r) for n, r in zip(nets, roles)]
-        return out[:1] if self.is_protected else out
+        if self.is_protected:
+            return [n for n in out if n.role == "user"] if len(nets) == 3 else out[:1]
+        return out
 
     def network(self, role: str | None = None) -> Network:
         nets = self.networks()
         if role is None:
-            return nets[0]
+            return next((n for n in nets if n.role == "user"), nets[0])
         for n in nets:
             if n.role == role:
                 return n
-        if self.is_protected and role in PKA_NETWORK_ROLES[1:]:
+        if self.is_protected and role in ("initial", "answer"):
             raise ProtectedActivityError(f"the {role!r} network is unavailable: {LOCKED_MESSAGE}")
         raise KeyError(f"no {role!r} network (have: {[n.role for n in nets]})")
 
@@ -681,9 +684,9 @@ class PTFile:
         return self.doc.extract_topologies()
 
     def notes(self) -> list[str]:
-        """Free text embedded in the (first) network: the network
+        """Free text embedded in the working network: the network
         description and physical-workspace environment notes, de-duplicated."""
-        el = self.networks()[0].el
+        el = self.network().el
         texts = [el.findtext("NETWORK/DESCRIPTION")]
         texts += [e.text for e in el.iterfind("PHYSICALWORKSPACE//ENVIRONMENT/NOTES")]
         out: list[str] = []

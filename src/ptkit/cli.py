@@ -273,7 +273,7 @@ def build_parser() -> argparse.ArgumentParser:
         sp.add_argument("file", help="input .pkt/.pka (or .xml for encode)")
         if network:
             sp.add_argument("-n", "--network", default=None,
-                            help="network role in a .pka: user | initial | answer (default: first)")
+                            help="network role in a .pka: user | initial | answer (default: user)")
         if device:
             sp.add_argument("device", help="device display name or hostname")
         if output:

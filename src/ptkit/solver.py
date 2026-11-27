@@ -11,7 +11,7 @@ from lxml import etree
 from . import codec
 from .assessment import grading_items, reconcile
 from .compatibility import repair_legacy_assessment
-from .model import NETWORK_TAGS, PTFile, Network
+from .model import NETWORK_TAGS, PKA_NETWORK_ROLES, PTFile, Network
 from .xmlio import XmlDoc
 
 
@@ -34,7 +34,11 @@ def _networks(pt, *, allow_missing_answer=False):
         networks = [el for el in pt.root if el.tag in NETWORK_TAGS]
         if len(networks) != 3 and not (allow_missing_answer and len(networks) in (1, 2)):
             raise SolveError('No unambiguous answer topology was found. This activity cannot be solved from embedded network data.')
-        user, answer = networks[0], networks[2] if len(networks) == 3 else None
+        if len(networks) == 3:
+            states = dict(zip(PKA_NETWORK_ROLES, networks))
+            user, answer = states['user'], states['answer']
+        else:
+            user, answer = networks[0], None
     if answer is not None and not any(isinstance(el.tag, str) and el.tag.rsplit('}', 1)[-1] == 'DEVICE'
                                      for el in answer.iter()):
         if allow_missing_answer:

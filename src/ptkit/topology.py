@@ -69,7 +69,8 @@ def extract_topologies(doc) -> dict:
         if state not in states:
             role = _tag(state).lower()
             if state in pt_roots and len(pt_roots) == 3:
-                role = ("user", "initial", "answer")[pt_roots.index(state)]
+                from .model import PKA_NETWORK_ROLES
+                role = PKA_NETWORK_ROLES[pt_roots.index(state)]
             elif state is doc.root or _tag(state) in ("PACKETTRACER", "PACKETTRACER5"):
                 role = "network"
             else:

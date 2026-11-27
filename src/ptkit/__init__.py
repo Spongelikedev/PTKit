@@ -5,7 +5,7 @@ from .iosconfig import IosConfig
 from .model import Activity, Device, Link, Network, Port, PTFile
 from .xmlio import XmlDoc, XmlFidelityError
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 
 __all__ = [
     "Activity", "CodecError", "Device", "Format", "IosConfig", "Link", "Network",
